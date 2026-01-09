@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Siparişler</title>
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>Call Center Panel</div>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="orders.html">Siparişler</a>
+    <a href="likes.html">Beğeni</a>
+    <a href="comments.html">Yorum</a>
+    <a href="explore.html">Keşfet</a>
+    <a href="index.html">Çıkış</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>Sipariş Ekle</h2>
+
+  <form action="/add-order" method="POST" enctype="multipart/form-data">
+    <input type="text" name="customer" placeholder="Müşteri Adı" required>
+    <input type="number" name="amount" placeholder="Tutar" required>
+
+    <select name="type" required>
+      <option value="">Paket Türü</option>
+      <option value="Beğeni">Beğeni</option>
+      <option value="Yorum">Yorum</option>
+      <option value="Keşfet">Keşfet</option>
+    </select>
+
+    <select name="status">
+      <option value="Beklemede">Beklemede</option>
+      <option value="Tamamlandı">Tamamlandı</option>
+    </select>
+
+    <input type="text" name="postLink" placeholder="Gönderi Linki">
+    <input type="file" name="pdf">
+
+    <button type="submit">Sipariş Ekle</button>
+  </form>
+
+  <hr>
+
+  <h2>Tüm Siparişler</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Müşteri</th>
+        <th>Tutar</th>
+        <th>Durum</th>
+        <th>Tür</th>
+        <th>Gönderi</th>
+        <th>PDF</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+</div>
+
+<script>
+fetch("/orders-data")
+  .then(r => r.json())
+  .then(data => {
+    const list = document.getElementById("list");
+
+    if (data.length === 0) {
+      list.innerHTML = `<tr><td colspan="6">Henüz sipariş yok</td></tr>`;
+      return;
+    }
+
+    data.forEach(o => {
+      list.innerHTML += `
+        <tr>
+          <td>${o.customer}</td>
+          <td>${o.amount} ₺</td>
+          <td>${o.status}</td>
+          <td>${o.type}</td>
+          <td>${o.postLink ? `<a href="${o.postLink}" target="_blank">Link</a>` : "-"}</td>
+          <td>${o.pdf ? `<a href="${o.pdf}" target="_blank">PDF</a>` : "-"}</td>
+        </tr>
+      `;
+    });
+  });
+</script>
+
+</body>
+</html>

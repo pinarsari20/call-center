@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Siparişler</title>
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>Call Center Panel</div>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="orders.html">Siparişler</a>
+    <a href="likes.html">Beğeni</a>
+    <a href="comments.html">Yorum</a>
+    <a href="explore.html">Keşfet</a>
+    <a href="index.html">Çıkış</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h3>Yeni Sipariş / Paket Ekle</h3>
+
+  <form action="/add-order" method="POST" enctype="multipart/form-data">
+    <select name="type" required>
+      <option value="Sipariş">Sipariş</option>
+      <option value="Beğeni">Beğeni</option>
+      <option value="Yorum">Yorum</option>
+      <option value="Keşfet">Keşfet</option>
+    </select>
+
+    <input name="customer" placeholder="Müşteri Adı" required>
+    <input name="amount" type="number" placeholder="Tutar (₺)" required>
+
+    <select name="status">
+      <option>Beklemede</option>
+      <option>Tamamlandı</option>
+    </select>
+
+    <input name="postLink" placeholder="Gönderi Linki (Instagram / TikTok)">
+
+    <input type="file" name="pdf">
+
+    <button>Ekle</button>
+  </form>
+</div>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Siparişler</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<div class="sidebar">
+  <a href="/dashboard.html">Dashboard</a>
+  <a href="/orders.html">Siparişler</a>
+  <a href="/trial.html">Deneme Hizmeti</a>
+  <a href="/staff.html">Personel Prim</a>
+  <a href="/appointments.html">Randevular</a>
+  <a href="/numbers.html">Numaralar</a>
+</div>
+
+<div class="content">
+  <h1>Siparişler</h1>
+
+  <button>Yeni Sipariş Ekle</button>
+<div class="filters">
+  <button onclick="filterOrders('all')">Tümü</button>
+  <button onclick="filterOrders('beklemede')">Beklemede</button>
+  <button onclick="filterOrders('islemde')">İşlemde</button>
+  <button onclick="filterOrders('tahsilat')">Tahsilat Bekleyen</button>
+  <button onclick="filterOrders('yenileme')">Yenileme</button>
+</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Müşteri</th>
+        <th>Telefon</th>
+        <th>Hizmet</th>
+        <th>Fiyat</th>
+        <th>Sipariş Tarihi</th>
+        <th>Bitiş Tarihi</th>
+        <th>Ödeme</th>
+        <th>Durum</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Hepsi şimdilik aynı tablo -->
+       <tr data-status="islemde">
+  <td>Ali Yılmaz</td>
+  <td>0535 000 00 00</td>
+  <td>Danışmanlık</td>
+  <td>500</td>
+  <td>01.01.2026</td>
+  <td>05.01.2026</td>
+  <td>Nakit</td>
+  <td>İşlemde</td>
+</tr>
+
+<tr data-status="tahsilat">
+  <td>Ayşe Demir</td>
+  <td>0544 111 11 11</td>
+  <td>Paket</td>
+  <td>1200</td>
+  <td>02.01.2026</td>
+  <td>07.01.2026</td>
+  <td>Kredi Kartı</td>
+  <td>Tahsilat Bekleyen</td>
+</tr>
+
+<tr data-status="yenileme">
+  <td>Mehmet Kaya</td>
+  <td>0555 222 22 22</td>
+  <td>Yenileme</td>
+  <td>800</td>
+  <td>03.01.2026</td>
+  <td>10.01.2026</td>
+  <td>Havale</td>
+  <td>Yenileme</td>
+</tr>
+
+    </tbody>
+  </table>
+</div>
+</table>
+
+<script>
+function filterOrders(status) {
+  document.querySelectorAll("tbody tr").forEach(row => {
+    if (status === "all") {
+      row.style.display = "";
+    } else {
+      row.style.display =
+        row.dataset.status === status ? "" : "none";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
+
+</body>
+</html>

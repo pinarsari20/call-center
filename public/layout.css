@@ -1,0 +1,199 @@
+/* ===============================
+   GENEL AYARLAR
+================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f6fa;
+  color: #111827;
+}
+
+/* ===============================
+   TOP BAR / MENÜ
+================================ */
+.topbar {
+  background: #111827;
+  color: white;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar .logo {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.topbar .menu a {
+  color: #cbd5e1;
+  margin-left: 18px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.topbar .menu a:hover,
+.topbar .menu a.active {
+  color: #ffffff;
+}
+
+/* ===============================
+   SAYFA İÇERİĞİ
+================================ */
+.container {
+  padding: 24px;
+}
+
+h1 {
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   İSTATİSTİK KARTLARI
+================================ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #1f2933;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.card span {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 26px;
+}
+
+/* ===============================
+   HIZLI İŞLEMLER
+================================ */
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.action {
+  background: #1f2933;
+  color: white;
+  padding: 14px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.action.primary {
+  background: #2563eb;
+}
+
+.action.success {
+  background: #16a34a;
+}
+
+.action a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+/* ===============================
+   TABLO
+================================ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background: #f1f5f9;
+}
+
+th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+td {
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+/* ===============================
+   DURUM ETİKETİ
+================================ */
+.badge {
+  background: #fde68a;
+  color: #92400e;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+/* ===============================
+   LİNKLER
+================================ */
+a {
+  color: #2563eb;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   MOBİL UYUMLULUK
+================================ */
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu {
+    margin-top: 10px;
+  }
+}

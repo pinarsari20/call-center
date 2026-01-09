@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Beğeni Paketleri</title>
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>Call Center Panel</div>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="orders.html">Siparişler</a>
+    <a href="likes.html">Beğeni</a>
+    <a href="comments.html">Yorum</a>
+    <a href="explore.html">Keşfet</a>
+    <a href="index.html">Çıkış</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>Beğeni Paketleri</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Müşteri</th>
+        <th>Tutar</th>
+        <th>Durum</th>
+        <th>Gönderi</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+</div>
+
+<script>
+fetch("/orders-data")
+  .then(r => r.json())
+  .then(data => {
+    const list = document.getElementById("list");
+    const filtered = data.filter(o => o.type === "Beğeni");
+
+    if (filtered.length === 0) {
+      list.innerHTML = `<tr><td colspan="4">Kayıt yok</td></tr>`;
+      return;
+    }
+
+    filtered.forEach(o => {
+      list.innerHTML += `
+        <tr>
+          <td>${o.customer}</td>
+          <td>${o.amount} ₺</td>
+          <td>${o.status}</td>
+          <td>
+            ${o.postLink ? `<a href="${o.postLink}" target="_blank">Link</a>` : "-"}
+          </td>
+        </tr>
+      `;
+    });
+  });
+</script>
+
+</body>
+</html>

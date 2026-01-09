@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<title>Numaralar</title>
+<style>
+body {
+  background:#0f172a;
+  color:#e5e7eb;
+  font-family:Arial, sans-serif;
+  margin:0;
+  padding:20px;
+}
+h1,h3 { margin-bottom:10px; }
+select,input,button {
+  padding:6px;
+  margin-right:6px;
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+th,td {
+  border:1px solid #334155;
+  padding:8px;
+  text-align:left;
+}
+th { background:#1e293b; }
+tr:hover { background:#1f2937; cursor:pointer; }
+
+#profileModal {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+#profileBox {
+  background:#020617;
+  padding:20px;
+  width:320px;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Numaralar</h1>
+
+<!-- PROFİL EKLE -->
+<div style="margin-bottom:20px;border:1px solid #334155;padding:10px;">
+  <h3>Profil Ekle</h3>
+  <select id="addHashtag"></select>
+  <input id="addUsername" placeholder="Instagram kullanıcı adı">
+  <button onclick="addProfile()">Ekle</button>
+  <div id="addResult"></div>
+</div>
+
+<!-- HASHTAG FİLTRE -->
+<select id="hashtagFilter">
+  <option value="">Tümü</option>
+</select>
+
+<div id="tableArea"></div>
+
+<!-- PROFİL MODAL -->
+<div id="profileModal">
+  <div id="profileBox">
+    <h3 id="mUser"></h3>
+    <p>Telefon: <span id="mPhone"></span></p>
+    <p>Hashtag: <span id="mHashtag"></span></p>
+    <p>Takipçi: <span id="mFollowers"></span></p>
+    <a id="mUrl" target="_blank">Instagram Profili</a><br><br>
+    <button onclick="closeProfile()">Kapat</button>
+  </div>
+</div>
+
+<script>
+/* ================================
+   HASHTAG LİSTESİ
+================================ */
+const ALL_HASHTAGS = [
+  "gelinlik","ayakkabi","bungalow","hali","giyim","organizasyon",
+  "taki","perde","emlak","tekstil","mimar","aydinlatma",
+  "mobilya","kuyumcu","prefabrik","duvarkagidi","araba","tatilkoyu"
+];
+
+/* ================================
+   SELECT DOLDUR
+================================ */
+const addHashtag = document.getElementById("addHashtag");
+const filterSelect = document.getElementById("hashtagFilter");
+
+ALL_HASHTAGS.forEach(h => {
+  const o1 = document.createElement("option");
+  o1.value = h;
+  o1.textContent = "#" + h;
+  addHashtag.appendChild(o1);
+
+  const o2 = o1.cloneNode(true);
+  filterSelect.appendChild(o2);
+});
+
+/* ================================
+   DATA
+================================ */
+let DATA = { hashtags:{} };
+
+async function loadData() {
+  const res = await fetch("/numbers.json");
+  DATA = await res.json();
+  renderTable();
+}
+
+/* ================================
+   PROFİL EKLE
+================================ */
+async function addProfile() {
+  const hashtag = addHashtag.value;
+  const username = document.getElementById("addUsername").value.trim();
+  if (!username) return;
+
+  if (!DATA.hashtags[hashtag]) DATA.hashtags[hashtag] = [];
+
+  DATA.hashtags[hashtag].push({
+    username,
+    phone:"",
+    followers:0,
+    profileUrl:"https://instagram.com/" + username
+  });
+
+  await fetch("/save", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(DATA)
+  });
+
+  document.getElementById("addResult").textContent = "✔ Profil eklendi";
+  document.getElementById("addUsername").value="";
+  renderTable();
+}
+
+/* ================================
+   TABLO
+================================ */
+function renderTable(filter="") {
+  let html = "<table><tr><th>#</th><th>Kullanıcı</th><th>Takipçi</th></tr>";
+
+  Object.keys(DATA.hashtags).forEach(tag => {
+    if (filter && tag !== filter) return;
+
+    DATA.hashtags[tag].forEach(item => {
+      html += `
+      <tr onclick='openProfile(${JSON.stringify({...item,hashtag:tag})})'>
+        <td>#${tag}</td>
+        <td>${item.username}</td>
+        <td>${item.followers||0}</td>
+      </tr>`;
+    });
+  });
+
+  html += "</table>";
+  document.getElementById("tableArea").innerHTML = html;
+}
+
+filterSelect.addEventListener("change", e => {
+  renderTable(e.target.value);
+});
+
+/* ================================
+   MODAL
+================================ */
+function openProfile(item) {
+  document.getElementById("mUser").textContent = item.username;
+  document.getElementById("mPhone").textContent = item.phone || "-";
+  document.getElementById("mHashtag").textContent = "#" + item.hashtag;
+  document.getElementById("mFollowers").textContent = item.followers || 0;
+  document.getElementById("mUrl").href = item.profileUrl;
+  document.getElementById("profileModal").style.display="flex";
+}
+function closeProfile() {
+  document.getElementById("profileModal").style.display="none";
+}
+
+/* ================================
+   BAŞLAT
+================================ */
+loadData();
+</script>
+
+</body>
+</html>

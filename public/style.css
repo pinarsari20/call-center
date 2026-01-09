@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Firma Rehberi</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .kategori {
+      max-width: 900px;
+      margin: 0 auto 40px;
+    }
+
+    .kategori h2 {
+      background: #111;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+
+    .kart {
+      background: #fff;
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .kart strong {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .kart a {
+      display: inline-block;
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .kart span {
+      display: block;
+      color: #444;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Firma Rehberi</h1>
+<div id="liste"></div>
+
+<script>
+const data = {
+  gelinlik: [
+    {
+      username: "ornek_gelinlik",
+      profile: "https://instagram.com/ornek_gelinlik",
+      phone: "+90 555 111 2233"
+    }
+  ],
+  ayakkabi: [
+    {
+      username: "ornek_ayakkabi",
+      profile: "https://instagram.com/ornek_ayakkabi",
+      phone: "+90 555 222 3344"
+    }
+  ],
+  mobilya: [
+    {
+      username: "ornek_mobilya",
+      profile: "https://instagram.com/ornek_mobilya",
+      phone: "+90 555 333 4455"
+    }
+  ],
+  emlak: [
+    {
+      username: "ornek_emlak",
+      profile: "https://instagram.com/ornek_emlak",
+      phone: "+90 555 444 5566"
+    }
+  ]
+};
+
+const listeDiv = document.getElementById("liste");
+
+Object.keys(data).forEach(kategori => {
+  const kategoriDiv = document.createElement("div");
+  kategoriDiv.className = "kategori";
+  kategoriDiv.innerHTML = `<h2>#${kategori}</h2>`;
+
+  data[kategori].forEach(item => {
+    const kart = document.createElement("div");
+    kart.className = "kart";
+    kart.innerHTML = `
+      <strong>${item.username}</strong>
+      <a href="${item.profile}" target="_blank">Instagram</a>
+      <span>${item.phone}</span>
+    `;
+    kategoriDiv.appendChild(kart);
+  });
+
+  listeDiv.appendChild(kategoriDiv);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Giriş</title>
+<style>
+body {
+  background:#0f172a;
+  color:#fff;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box {
+  background:#020617;
+  padding:30px;
+  border-radius:10px;
+  width:300px;
+}
+input,button {
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:none;
+  border-radius:6px;
+}
+button {
+  background:#2563eb;
+  color:#fff;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="box">
+  <h2>Giriş Yap</h2>
+  <form method="POST" action="/login">
+    <input name="username" placeholder="Kullanıcı adı">
+    <input name="password" type="password" placeholder="Şifre">
+    <button type="submit">Giriş</button>
+  </form>
+</div>
+</body>
+</html>
