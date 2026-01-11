@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>Numaralar</title>
+
 <style>
 body {
   background:#0f172a;
@@ -88,9 +89,6 @@ const ALL_HASHTAGS = [
   "mobilya","kuyumcu","prefabrik","duvarkagidi","araba","tatilkoyu"
 ];
 
-/* ================================
-   SELECT DOLDUR
-================================ */
 const addHashtag = document.getElementById("addHashtag");
 const filterSelect = document.getElementById("hashtagFilter");
 
@@ -107,10 +105,13 @@ ALL_HASHTAGS.forEach(h => {
 /* ================================
    DATA
 ================================ */
-let DATA = { hashtags:{} };
+let DATA = [];
 
+/* ================================
+   LOAD
+================================ */
 async function loadData() {
-  const res = await fetch("/numbers.json");
+  const res = await fetch("/api/numbers");
   DATA = await res.json();
   renderTable();
 }
@@ -123,43 +124,44 @@ async function addProfile() {
   const username = document.getElementById("addUsername").value.trim();
   if (!username) return;
 
-  if (!DATA.hashtags[hashtag]) DATA.hashtags[hashtag] = [];
-
-  DATA.hashtags[hashtag].push({
-    username,
-    phone:"",
-    followers:0,
-    profileUrl:"https://instagram.com/" + username
-  });
-
-  await fetch("/save", {
+  await fetch("/api/numbers", {
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify(DATA)
+    body:JSON.stringify({
+      username,
+      hashtag,
+      profileUrl:"https://instagram.com/" + username
+    })
   });
 
   document.getElementById("addResult").textContent = "✔ Profil eklendi";
   document.getElementById("addUsername").value="";
-  renderTable();
+  loadData();
 }
 
 /* ================================
    TABLO
 ================================ */
 function renderTable(filter="") {
-  let html = "<table><tr><th>#</th><th>Kullanıcı</th><th>Takipçi</th></tr>";
+  let html = `
+  <table>
+    <tr>
+      <th>#</th>
+      <th>Kullanıcı</th>
+      <th>Hashtag</th>
+      <th>Profil</th>
+    </tr>`;
 
-  Object.keys(DATA.hashtags).forEach(tag => {
-    if (filter && tag !== filter) return;
+  DATA.forEach((item,i) => {
+    if (filter && item.hashtag !== filter) return;
 
-    DATA.hashtags[tag].forEach(item => {
-      html += `
-      <tr onclick='openProfile(${JSON.stringify({...item,hashtag:tag})})'>
-        <td>#${tag}</td>
-        <td>${item.username}</td>
-        <td>${item.followers||0}</td>
-      </tr>`;
-    });
+    html += `
+    <tr onclick='openProfile(${JSON.stringify(item)})'>
+      <td>${i+1}</td>
+      <td>${item.username}</td>
+      <td>#${item.hashtag}</td>
+      <td>Görüntüle</td>
+    </tr>`;
   });
 
   html += "</table>";
@@ -193,3 +195,4 @@ loadData();
 
 </body>
 </html>
+

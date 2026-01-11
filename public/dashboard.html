@@ -42,7 +42,6 @@ button{background:#2563eb;border:none;color:#fff;cursor:pointer}
 
 <div class="main">
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <h1>Dashboard</h1>
   <div class="cards">
@@ -54,7 +53,6 @@ button{background:#2563eb;border:none;color:#fff;cursor:pointer}
   </div>
 </div>
 
-<!-- ORDERS -->
 <div id="orders" class="hidden">
   <h1>Siparişler</h1>
   <button onclick="go('addOrder')">+ Yeni Sipariş</button>
@@ -71,27 +69,25 @@ button{background:#2563eb;border:none;color:#fff;cursor:pointer}
 
 <div id="addOrder" class="hidden">
   <h1>Yeni Sipariş</h1>
-  <input id="customer" placeholder="Müşteri Adı">
-  <input id="phone" placeholder="Telefon">
-  <input id="service" placeholder="Hizmet">
-  <input id="price" placeholder="Fiyat">
-  <input id="staff" placeholder="Personel">
+  <input id="customer">
+  <input id="phone">
+  <input id="service">
+  <input id="price">
+  <input id="staff">
   <button onclick="saveOrder()">Kaydet</button>
 </div>
 
-<!-- STAFF -->
 <div id="staff" class="hidden">
   <h1>Personel Prim</h1>
-  <input id="staffName" placeholder="Personel Adı">
+  <input id="staffName">
   <input id="staffMonth" type="month">
   <button onclick="loadStaff()">Hesapla</button>
   <div id="staffResult"></div>
 </div>
 
-<!-- TRIAL -->
 <div id="trials" class="hidden">
   <h1>Deneme Hizmeti</h1>
-  <input id="trialLink" placeholder="Sipariş Linki">
+  <input id="trialLink">
   <select id="trialCategory">
     <option>Beğeni</option>
     <option>Yorum</option>
@@ -101,15 +97,28 @@ button{background:#2563eb;border:none;color:#fff;cursor:pointer}
   <div id="trialList"></div>
 </div>
 
-<!-- APPOINTMENTS -->
 <div id="appointments" class="hidden">
   <h1>Randevular</h1>
-  <input id="appPhone" placeholder="Telefon">
+  <input id="appPhone">
   <input id="appDate" type="date">
   <input id="appTime" type="time">
   <button onclick="saveAppointment()">Kaydet</button>
   <div id="appointmentList"></div>
 </div>
+
+<h2>Numaralar</h2>
+
+<table id="tbl" border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Kullanıcı</th>
+      <th>Hashtag</th>
+      <th>Profil</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
 </div>
 
@@ -133,7 +142,7 @@ async function loadOrders(){
   <td>${o.phone||""}</td>
   <td>${o.service||""}</td>
   <td>${o.price||""}</td>
-  <td><span class="status ${o.status||'pending'}">${o.status||'pending'}</span></td>
+  <td>${o.status||'pending'}</td>
  </tr>`).join('');
 }
 
@@ -148,7 +157,7 @@ async function saveOrder(){
 async function loadStaff(){
  const r=await fetch(`/api/staff-stats?staff=${staffName.value}&month=${staffMonth.value}`);
  const d=await r.json();
- staffResult.innerHTML=`<p>Ciro: ${d.turnover} TL</p><p>Prim: ${d.commission} TL</p>`;
+ staffResult.innerHTML=`<p>Ciro: ${d.turnover}</p><p>Prim: ${d.commission}</p>`;
 }
 
 async function loadTrials(){
@@ -175,21 +184,27 @@ async function saveAppointment(){
  loadAppointments();
 }
 
-loadOrders();loadTrials();loadAppointments();
-</script>
-<h2>Randevular</h2>
-<div id="appointmentList"></div>
+async function loadNumbers(){
+ const r = await fetch('/api/numbers');
+ const data = await r.json();
+ const tbody = document.querySelector('#tbl tbody');
+ tbody.innerHTML = '';
+ data.forEach((n,i)=>{
+  tbody.innerHTML += `
+   <tr>
+    <td>${i+1}</td>
+    <td>${n.kullanici_adi || n.username}</td>
+    <td>${n.hashtag}</td>
+    <td><a href="${n.profileUrl}" target="_blank">Profil</a></td>
+   </tr>`;
+ });
+}
 
-<table id="tbl" border="1" cellpadding="8">
-  <thead>
-    <tr>
-      <th>Kullanıcı</th>
-      <th>Hashtag</th>
-      <th>Profil</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+loadOrders();
+loadTrials();
+loadAppointments();
+loadNumbers();
+</script>
 
 </body>
 </html>
