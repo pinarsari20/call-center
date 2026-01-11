@@ -8,17 +8,20 @@ body{background:#0f172a;color:#fff;font-family:Arial;display:flex;justify-conten
 .box{background:#020617;padding:30px;border-radius:12px;width:320px}
 input,button{width:100%;padding:12px;margin-bottom:12px;border:none;border-radius:6px}
 button{background:#2563eb;color:#fff;cursor:pointer}
+.error{background:#7f1d1d;color:#fecaca;padding:10px;border-radius:6px;text-align:center}
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h2>Giriş Yap</h2>
-  <form action="/login" method="POST">
-    <input name="username" placeholder="Kullanıcı adı">
-    <input name="password" type="password" placeholder="Şifre">
-    <button type="submit">Giriş</button>
-  </form>
+<h2>Giriş Yap</h2>
+
+<form action="/login" method="POST">
+  <input name="username" placeholder="Kullanıcı adı">
+  <input name="password" type="password" placeholder="Şifre">
+  <button type="submit">Giriş</button>
+</form>
+
 </div>
 
 </body>
