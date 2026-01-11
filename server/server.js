@@ -13,6 +13,42 @@ const JWT_SECRET = "CHANGE_THIS_SECRET_KEY";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../public")));
+const NUMBERS_FILE = path.join(__dirname, "numbers.json");
+
+app.get("/api/numbers", (req, res) => {
+  try {
+    const data = fs.existsSync(NUMBERS_FILE)
+      ? JSON.parse(fs.readFileSync(NUMBERS_FILE, "utf-8"))
+      : [];
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: "numbers okunamadı" });
+  }
+});
+
+app.get("/api/profiles", async (req, res) => {
+  const { hashtag } = req.query;
+
+  // burada SENİN ÇALIŞAN hashtag -> post kodun var
+  const posts = await getPostsByHashtag(hashtag); // zaten sende var
+
+  const unique = new Set();
+  const profiles = [];
+
+  posts.forEach(post => {
+    const username = post.owner?.username;
+    if (username && !unique.has(username)) {
+      unique.add(username);
+      profiles.push({
+        username,
+        profileUrl: `https://instagram.com/${username}`,
+        hashtag
+      });
+    }
+  });
+
+  res.json(profiles);
+});
 
 /* ==============================
    OPTIONAL AUTH (MEVCUT AKIŞI BOZMAZ)
