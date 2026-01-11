@@ -1,36 +1,32 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Numaralar</title>
 
 <style>
-body {
+body{
   background:#0f172a;
   color:#e5e7eb;
   font-family:Arial, sans-serif;
   margin:0;
   padding:20px;
 }
-h1,h3 { margin-bottom:10px; }
-select,input,button {
-  padding:6px;
-  margin-right:6px;
-}
-table {
+h1,h3{margin-bottom:10px}
+select,input,button{padding:6px;margin-right:6px}
+table{
   width:100%;
   border-collapse:collapse;
   margin-top:15px;
 }
-th,td {
+th,td{
   border:1px solid #334155;
   padding:8px;
-  text-align:left;
 }
-th { background:#1e293b; }
-tr:hover { background:#1f2937; cursor:pointer; }
+th{background:#1e293b}
+tr:hover{background:#1f2937;cursor:pointer}
 
-#profileModal {
+#profileModal{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.7);
@@ -38,12 +34,13 @@ tr:hover { background:#1f2937; cursor:pointer; }
   align-items:center;
   justify-content:center;
 }
-#profileBox {
+#profileBox{
   background:#020617;
   padding:20px;
   width:320px;
   border-radius:8px;
 }
+a{color:#38bdf8;text-decoration:none}
 </style>
 </head>
 
@@ -60,29 +57,27 @@ tr:hover { background:#1f2937; cursor:pointer; }
   <div id="addResult"></div>
 </div>
 
-<!-- HASHTAG FİLTRE -->
+<!-- FİLTRE -->
 <select id="hashtagFilter">
   <option value="">Tümü</option>
 </select>
 
 <div id="tableArea"></div>
 
-<!-- PROFİL MODAL -->
+<!-- MODAL -->
 <div id="profileModal">
   <div id="profileBox">
     <h3 id="mUser"></h3>
-    <p>Telefon: <span id="mPhone"></span></p>
     <p>Hashtag: <span id="mHashtag"></span></p>
-    <p>Takipçi: <span id="mFollowers"></span></p>
     <a id="mUrl" target="_blank">Instagram Profili</a><br><br>
     <button onclick="closeProfile()">Kapat</button>
   </div>
 </div>
 
 <script>
-/* ================================
-   HASHTAG LİSTESİ
-================================ */
+/* ===============================
+   HASHTAGS
+=============================== */
 const ALL_HASHTAGS = [
   "gelinlik","ayakkabi","bungalow","hali","giyim","organizasyon",
   "taki","perde","emlak","tekstil","mimar","aydinlatma",
@@ -92,58 +87,34 @@ const ALL_HASHTAGS = [
 const addHashtag = document.getElementById("addHashtag");
 const filterSelect = document.getElementById("hashtagFilter");
 
-ALL_HASHTAGS.forEach(h => {
-  const o1 = document.createElement("option");
-  o1.value = h;
-  o1.textContent = "#" + h;
+ALL_HASHTAGS.forEach(h=>{
+  const o1=document.createElement("option");
+  o1.value=h;o1.textContent="#"+h;
   addHashtag.appendChild(o1);
 
-  const o2 = o1.cloneNode(true);
+  const o2=o1.cloneNode(true);
   filterSelect.appendChild(o2);
 });
 
-/* ================================
+/* ===============================
    DATA
-================================ */
-let DATA = [];
+=============================== */
+let DATA=[];
 
-/* ================================
+/* ===============================
    LOAD
-================================ */
-async function loadData() {
-  const res = await fetch("/api/numbers");
-  DATA = await res.json();
+=============================== */
+async function loadData(){
+  const res=await fetch("/api/numbers");
+  DATA=await res.json();
   renderTable();
 }
 
-/* ================================
-   PROFİL EKLE
-================================ */
-async function addProfile() {
-  const hashtag = addHashtag.value;
-  const username = document.getElementById("addUsername").value.trim();
-  if (!username) return;
-
-  await fetch("/api/numbers", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      username,
-      hashtag,
-      profileUrl:"https://instagram.com/" + username
-    })
-  });
-
-  document.getElementById("addResult").textContent = "✔ Profil eklendi";
-  document.getElementById("addUsername").value="";
-  loadData();
-}
-
-/* ================================
-   TABLO
-================================ */
-function renderTable(filter="") {
-  let html = `
+/* ===============================
+   TABLE
+=============================== */
+function renderTable(filter=""){
+  let html=`
   <table>
     <tr>
       <th>#</th>
@@ -152,10 +123,9 @@ function renderTable(filter="") {
       <th>Profil</th>
     </tr>`;
 
-  DATA.forEach((item,i) => {
-    if (filter && item.hashtag !== filter) return;
-
-    html += `
+  DATA.forEach((item,i)=>{
+    if(filter && item.hashtag!==filter) return;
+    html+=`
     <tr onclick='openProfile(${JSON.stringify(item)})'>
       <td>${i+1}</td>
       <td>${item.username}</td>
@@ -164,35 +134,59 @@ function renderTable(filter="") {
     </tr>`;
   });
 
-  html += "</table>";
-  document.getElementById("tableArea").innerHTML = html;
+  html+="</table>";
+  document.getElementById("tableArea").innerHTML=html;
 }
 
-filterSelect.addEventListener("change", e => {
+filterSelect.addEventListener("change",e=>{
   renderTable(e.target.value);
 });
 
-/* ================================
+/* ===============================
    MODAL
-================================ */
-function openProfile(item) {
-  document.getElementById("mUser").textContent = item.username;
-  document.getElementById("mPhone").textContent = item.phone || "-";
-  document.getElementById("mHashtag").textContent = "#" + item.hashtag;
-  document.getElementById("mFollowers").textContent = item.followers || 0;
-  document.getElementById("mUrl").href = item.profileUrl;
+=============================== */
+function openProfile(item){
+  document.getElementById("mUser").textContent=item.username;
+  document.getElementById("mHashtag").textContent="#"+item.hashtag;
+  document.getElementById("mUrl").href=item.profileUrl;
   document.getElementById("profileModal").style.display="flex";
 }
-function closeProfile() {
+function closeProfile(){
   document.getElementById("profileModal").style.display="none";
 }
 
-/* ================================
-   BAŞLAT
-================================ */
+/* ===============================
+   ADD PROFILE
+=============================== */
+async function addProfile(){
+  const username=document.getElementById("addUsername").value.trim();
+  const hashtag=addHashtag.value;
+
+  if(!username){
+    alert("Kullanıcı adı boş");
+    return;
+  }
+
+  await fetch("/api/numbers",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username,
+      hashtag,
+      profileUrl:"https://instagram.com/"+username
+    })
+  });
+
+  document.getElementById("addUsername").value="";
+  document.getElementById("addResult").textContent="✔ Profil eklendi";
+  loadData();
+}
+
+/* ===============================
+   START
+=============================== */
 loadData();
 </script>
 
 </body>
 </html>
-
