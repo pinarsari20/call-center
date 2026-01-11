@@ -5,108 +5,38 @@
 <title>Yönetim Paneli</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0f172a;
-  color:#e5e7eb;
-  display:flex;
-}
-.sidebar{
-  width:240px;
-  background:#020617;
-  padding:20px;
-  height:100vh;
-}
-.sidebar h2{margin-bottom:20px;}
-.sidebar a{
-  display:block;
-  color:#cbd5f5;
-  text-decoration:none;
-  padding:10px;
-  border-radius:6px;
-  margin-bottom:6px;
-  cursor:pointer;
-}
-.sidebar a:hover{background:#1e293b;}
-.main{
-  flex:1;
-  padding:30px;
-  overflow-y:auto;
-}
+body{margin:0;font-family:Arial;background:#0f172a;color:#e5e7eb;display:flex}
+.sidebar{width:240px;background:#020617;padding:20px;height:100vh}
+.sidebar a{display:block;color:#cbd5f5;padding:10px;border-radius:6px;margin-bottom:6px;cursor:pointer;text-decoration:none}
+.sidebar a.active,.sidebar a:hover{background:#2563eb;color:#fff}
+.main{flex:1;padding:30px;overflow-y:auto}
 .hidden{display:none}
-
-/* DASHBOARD */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:20px;
-}
-.card{
-  background:#020617;
-  padding:20px;
-  border-radius:10px;
-  text-align:center;
-  cursor:pointer;
-}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.card{background:#020617;padding:20px;border-radius:10px;text-align:center;cursor:pointer}
 .card:hover{background:#1e293b}
-
-/* TABLO */
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#020617;
-  margin-top:15px;
-}
-th,td{
-  padding:10px;
-  border-bottom:1px solid #1e293b;
-}
+table{width:100%;border-collapse:collapse;background:#020617;margin-top:15px}
+th,td{padding:10px;border-bottom:1px solid #1e293b}
 th{color:#94a3b8}
-
-/* FORM */
-input,select,button{
-  padding:8px;
-  width:100%;
-  margin-bottom:10px;
-}
-button{
-  background:#2563eb;
-  border:none;
-  color:#fff;
-  cursor:pointer;
-}
-.tabs button{
-  width:auto;
-  margin-right:5px;
-  background:#1e293b;
-}
+input,select,button{padding:8px;width:100%;margin-bottom:10px}
+button{background:#2563eb;border:none;color:#fff;cursor:pointer}
+.tabs button{width:auto;background:#1e293b;margin-right:5px}
 .tabs button.active{background:#2563eb}
-.sidebar a.active-menu {
-  background: #2563eb;
-  color: #fff;
-  font-weight: bold;
-}
-.count {
-  margin-top: 10px;
-  font-size: 26px;
-  font-weight: bold;
-  color: #38bdf8;
-}
-
+.status{padding:4px 8px;border-radius:6px;font-size:12px}
+.pending{background:#facc15;color:#000}
+.processing{background:#38bdf8;color:#000}
+.completed{background:#22c55e;color:#000}
+.cancelled{background:#ef4444;color:#fff}
 </style>
 </head>
 
 <body>
 
-
 <div class="sidebar">
-  <h2>Yönetim Paneli</h2>
-  <a onclick="show('dashboard')">Dashboard</a>
-  <a onclick="show('orders')">Siparişler</a>
-  <a onclick="show('trial')">Deneme Hizmeti</a>
-  <a onclick="show('staff')">Personel Prim</a>
-  <a onclick="show('appointments')">Randevular</a>
+  <a class="active" onclick="show('dashboard',this)">Dashboard</a>
+  <a onclick="show('orders',this)">Siparişler</a>
+  <a onclick="show('staff',this)">Personel Prim</a>
+  <a onclick="show('trials',this)">Deneme Hizmeti</a>
+  <a onclick="show('appointments',this)">Randevular</a>
   <a href="numbers.html">Numaralar</a>
 </div>
 
@@ -116,188 +46,136 @@ button{
 <div id="dashboard">
   <h1>Dashboard</h1>
   <div class="cards">
-    <div class="card" onclick="show('orders')">Siparişler</div>
-    <div class="card" onclick="show('trial')">Deneme Hizmeti</div>
-    <div class="card" onclick="show('staff')">Personel Prim</div>
-    <div class="card" onclick="show('appointments')">Randevular</div>
+    <div class="card" onclick="go('orders')">Siparişler</div>
+    <div class="card" onclick="go('staff')">Personel Prim</div>
+    <div class="card" onclick="go('trials')">Deneme Hizmeti</div>
+    <div class="card" onclick="go('appointments')">Randevular</div>
     <div class="card" onclick="location.href='numbers.html'">Numaralar</div>
   </div>
 </div>
 
-<!-- SİPARİŞLER -->
+<!-- ORDERS -->
 <div id="orders" class="hidden">
   <h1>Siparişler</h1>
-
-  <div class="tabs">
-    <button class="active" onclick="filterOrders('ALL',this)">Tümü</button>
-    <button onclick="filterOrders('PAY',this)">Ödeme Günü</button>
-    <button onclick="filterOrders('RENEW',this)">Yenileme Günü</button>
-  </div>
-
-  <button onclick="show('addOrder')">+ Yeni Sipariş</button>
-
+  <button onclick="go('addOrder')">+ Yeni Sipariş</button>
   <table>
     <thead>
       <tr>
-        <th>Müşteri</th>
-        <th>Telefon</th>
-        <th>Hizmet</th>
-        <th>Fiyat</th>
-        <th>Ödeme</th>
-        <th>Yenileme</th>
+        <th>Müşteri</th><th>Telefon</th><th>Hizmet</th>
+        <th>Fiyat</th><th>Durum</th>
       </tr>
     </thead>
     <tbody id="orderRows"></tbody>
   </table>
 </div>
 
-<!-- YENİ SİPARİŞ -->
 <div id="addOrder" class="hidden">
   <h1>Yeni Sipariş</h1>
-  <input id="name" placeholder="Müşteri Adı">
+  <input id="customer" placeholder="Müşteri Adı">
   <input id="phone" placeholder="Telefon">
-  <select id="service">
-    <option>Beğeni</option>
-    <option>Yorum</option>
-    <option>Keşfet</option>
-    <option>Meta Reklamları</option>
-  </select>
+  <input id="service" placeholder="Hizmet">
   <input id="price" placeholder="Fiyat">
-  <label>Ödeme Tarihi</label>
-  <input type="date" id="pay">
-  <label>Yenileme Tarihi</label>
-  <input type="date" id="renew">
+  <input id="staff" placeholder="Personel">
   <button onclick="saveOrder()">Kaydet</button>
 </div>
 
-<!-- DENEME -->
-<div id="trial" class="hidden">
+<!-- STAFF -->
+<div id="staff" class="hidden">
+  <h1>Personel Prim</h1>
+  <input id="staffName" placeholder="Personel Adı">
+  <input id="staffMonth" type="month">
+  <button onclick="loadStaff()">Hesapla</button>
+  <div id="staffResult"></div>
+</div>
+
+<!-- TRIAL -->
+<div id="trials" class="hidden">
   <h1>Deneme Hizmeti</h1>
-  <input placeholder="Sipariş Linki">
-  <select>
+  <input id="trialLink" placeholder="Sipariş Linki">
+  <select id="trialCategory">
     <option>Beğeni</option>
     <option>Yorum</option>
     <option>Keşfet</option>
   </select>
-  <button>Kaydet</button>
+  <button onclick="saveTrial()">Kaydet</button>
+  <div id="trialList"></div>
 </div>
 
-<!-- PERSONEL -->
-<div id="staff" class="hidden">
-  <h1>Personel Prim</h1>
-  <p>Aylık Ciro: (siparişlerden manuel)</p>
-  <p>Prim: (sonra bağlanacak)</p>
-</div>
-
-<!-- RANDEVULAR -->
+<!-- APPOINTMENTS -->
 <div id="appointments" class="hidden">
   <h1>Randevular</h1>
-  <input placeholder="Telefon">
-  <input type="date">
-  <input type="time">
-  <input placeholder="Not">
-  <button>Kaydet</button>
+  <input id="appPhone" placeholder="Telefon">
+  <input id="appDate" type="date">
+  <input id="appTime" type="time">
+  <button onclick="saveAppointment()">Kaydet</button>
+  <div id="appointmentList"></div>
 </div>
 
 </div>
 
 <script>
-let allOrders=[];
-let filter="ALL";
+let orders=[],trials=[],appointments=[];
 
-function show(id){
+function show(id,el){
  document.querySelectorAll('.main>div').forEach(d=>d.classList.add('hidden'));
  document.getElementById(id).classList.remove('hidden');
- const titles = {
-  dashboard: "Dashboard",
-  orders: "Siparişler",
-  trial: "Deneme Hizmeti",
-  staff: "Personel Prim",
-  appointments: "Randevular"
-};
-
-setTitle(titles[section] || "Yönetim Paneli");
-
+ document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));
+ if(el) el.classList.add('active');
 }
+function go(id){show(id)}
 
 async function loadOrders(){
- const res=await fetch("/api/orders");
- allOrders=await res.json();
- renderOrders();
+ const r=await fetch('/api/orders');
+ orders=await r.json();
+ orderRows.innerHTML=orders.map(o=>`
+ <tr>
+  <td>${o.customer||""}</td>
+  <td>${o.phone||""}</td>
+  <td>${o.service||""}</td>
+  <td>${o.price||""}</td>
+  <td><span class="status ${o.status||'pending'}">${o.status||'pending'}</span></td>
+ </tr>`).join('');
 }
 
 async function saveOrder(){
- const order={
-  name:name.value,
-  phone:phone.value,
-  service:service.value,
-  price:price.value,
-  pay:pay.value,
-  renew:renew.value
- };
- await fetch("/api/orders",{
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body:JSON.stringify(order)
- });
- show("orders");
- loadOrders();
+ await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+  customer:customer.value,phone:phone.value,service:service.value,
+  price:price.value,staff:staff.value
+ })});
+ loadOrders(); go('orders');
 }
 
-function filterOrders(f,b){
- filter=f;
- document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');
- renderOrders();
+async function loadStaff(){
+ const r=await fetch(`/api/staff-stats?staff=${staffName.value}&month=${staffMonth.value}`);
+ const d=await r.json();
+ staffResult.innerHTML=`<p>Ciro: ${d.turnover} TL</p><p>Prim: ${d.commission} TL</p>`;
 }
 
-function renderOrders(){
- const today=new Date().toISOString().split("T")[0];
- orderRows.innerHTML="";
- allOrders.filter(o=>{
-  if(filter==="PAY") return o.pay===today;
-  if(filter==="RENEW") return o.renew===today;
-  return true;
- }).forEach(o=>{
-  orderRows.innerHTML+=`
-   <tr>
-    <td>${o.name}</td>
-    <td>${o.phone}</td>
-    <td>${o.service}</td>
-    <td>${o.price}</td>
-    <td>${o.pay||"-"}</td>
-    <td>${o.renew||"-"}</td>
-   </tr>`;
- });
+async function loadTrials(){
+ const r=await fetch('/api/trials');
+ trials=await r.json();
+ trialList.innerHTML=trials.map(t=>`<div>${t.category} - ${t.link}</div>`).join('');
+}
+async function saveTrial(){
+ await fetch('/api/trials',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+  link:trialLink.value,category:trialCategory.value
+ })});
+ loadTrials();
 }
 
-loadOrders();
-fetch("/api/orders")
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("orderCount").innerText = data.length;
-  });
-function setTitle(text) {
-  document.querySelector("h1").innerText = text;
+async function loadAppointments(){
+ const r=await fetch('/api/appointments');
+ appointments=await r.json();
+ appointmentList.innerHTML=appointments.map(a=>`<div>${a.phone} - ${a.date} ${a.time}</div>`).join('');
+}
+async function saveAppointment(){
+ await fetch('/api/appointments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+  phone:appPhone.value,date:appDate.value,time:appTime.value
+ })});
+ loadAppointments();
 }
 
-</script>
-<script>
-  fetch("/menu.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("menu").innerHTML = html;
-    });
-</script>
-<script>
-function setActiveMenu(name) {
-  document.querySelectorAll(".sidebar a").forEach(a => {
-    a.classList.remove("active-menu");
-  });
-
-  const active = document.querySelector(`.sidebar a[onclick*="${name}"]`);
-  if (active) active.classList.add("active-menu");
-}
+loadOrders();loadTrials();loadAppointments();
 </script>
 
 </body>

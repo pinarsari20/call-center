@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "id": 1,
+    "musteri_adi": "",
+    "telefon": "",
+    "siparis_linki": "",
+    "hizmet": "",
+    "hizmet_turu": "beğeni | yorum | keşfet | meta",
+    "fiyat": 0,
+    "odeme_durumu": "bekleniyor | ödendi",
+    "siparis_durumu": "beklemede | işlemde | tahsilat_bekleyen | yenileme_yapilacak | odeme_yapilacak",
+    "siparis_tarihi": "",
+    "bitis_tarihi": "",
+    "personel": "",
+    "aciklama": "",
+    "olusturma_tarihi": ""
+  }
+]
+
