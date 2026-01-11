@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "username": "test_kullanici",
+    "hashtag": "#deneme",
+    "profileUrl": "https://instagram.com/test_kullanici"
+  }
+]
