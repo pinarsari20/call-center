@@ -96,7 +96,13 @@ option {
   <h1>Yeni Sipariş</h1>
   <input id="customer">
   <input id="phone">
-  <input id="service">
+  <select id="service">
+  <option value="">Hizmet Seç</option>
+  <option value="kesfet">Keşfet</option>
+  <option value="meta">Meta Reklam</option>
+  <option value="meta_kesfet">Meta Reklam + Keşfet</option>
+</select>
+
   <input id="price">
   <input id="staff">
   <button onclick="saveOrder()">Kaydet</button>
@@ -172,6 +178,20 @@ async function loadOrders(){
 }
 
 async function saveOrder(){
+function saveOrder() {
+  const customer = document.getElementById("customer").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const service = document.getElementById("service").value;
+  const price = document.getElementById("price").value.trim();
+
+  if (!customer || !phone || !service || !price) {
+    alert("Lütfen tüm alanları doldurun");
+    return;
+  }
+
+  // devamındaki mevcut saveOrder kodun BURADA kalsın
+}
+
  await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
   customer:customer.value,phone:phone.value,service:service.value,
   price:price.value,staff:staff.value
