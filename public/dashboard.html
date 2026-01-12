@@ -179,6 +179,7 @@ async function loadOrders(){
 
 async function saveOrder(){
 function saveOrder() {
+
   const customer = document.getElementById("customer").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const service = document.getElementById("service").value;
@@ -193,6 +194,13 @@ function saveOrder() {
 }
 
  await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+  // inputları temizle
+document.getElementById("customer").value = "";
+document.getElementById("phone").value = "";
+document.getElementById("Service").value = "";
+document.getElementById("price").value = "";
+document.getElementById("staff").value = "";
+
   customer:customer.value,phone:phone.value,service:service.value,
   price:price.value,staff:staff.value
  })});
