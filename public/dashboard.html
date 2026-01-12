@@ -19,38 +19,14 @@ th,td{padding:10px;border-bottom:1px solid #1e293b}
 th{color:#94a3b8}
 input,select,button{padding:8px;width:100%;margin-bottom:10px}
 button{background:#2563eb;border:none;color:#fff;cursor:pointer}
-.tabs button{width:auto;background:#1e293b;margin-right:5px}
-.tabs button.active{background:#2563eb}
-.status{padding:4px 8px;border-radius:6px;font-size:12px}
-.pending{background:#facc15;color:#000}
-.processing{background:#38bdf8;color:#000}
-.completed{background:#22c55e;color:#000}
-.cancelled{background:#ef4444;color:#fff}
-input::placeholder {
-  color: #94a3b8;
-  /* INPUT – SELECT – TEXTAREA YAZILARI */
-input,
-select,
-textarea {
-  background:#020617 !important;
-  color:#e5e7eb !important;
-  border:1px solid #334155;
-}
 
-/* PLACEHOLDER */
-input::placeholder,
-textarea::placeholder {
-  color:#94a3b8;
+input,select,textarea{
+ background:#020617;
+ color:#e5e7eb;
+ border:1px solid #334155;
 }
-
-/* SELECT OPTION */
-option {
-  background:#020617;
-  color:#e5e7eb;
-}
-
-}
-
+input::placeholder,textarea::placeholder{color:#94a3b8}
+option{background:#020617;color:#e5e7eb}
 </style>
 </head>
 
@@ -94,23 +70,22 @@ option {
 
 <div id="addOrder" class="hidden">
   <h1>Yeni Sipariş</h1>
-  <input id="customer">
-  <input id="phone">
+  <input id="customer" placeholder="Müşteri">
+  <input id="phone" placeholder="Telefon">
   <select id="service">
-  <option value="">Hizmet Seç</option>
-  <option value="kesfet">Keşfet</option>
-  <option value="meta">Meta Reklam</option>
-  <option value="meta_kesfet">Meta Reklam + Keşfet</option>
-</select>
-
-  <input id="price">
-  <input id="staff">
+    <option value="">Hizmet Seç</option>
+    <option value="kesfet">Keşfet</option>
+    <option value="meta">Meta Reklam</option>
+    <option value="meta_kesfet">Meta Reklam + Keşfet</option>
+  </select>
+  <input id="price" placeholder="Fiyat">
+  <input id="staff" placeholder="Personel">
   <button onclick="saveOrder()">Kaydet</button>
 </div>
 
 <div id="staff" class="hidden">
   <h1>Personel Prim</h1>
-  <input id="staffName">
+  <input id="staffName" placeholder="Personel">
   <input id="staffMonth" type="month">
   <button onclick="loadStaff()">Hesapla</button>
   <div id="staffResult"></div>
@@ -118,7 +93,7 @@ option {
 
 <div id="trials" class="hidden">
   <h1>Deneme Hizmeti</h1>
-  <input id="trialLink">
+  <input id="trialLink" placeholder="Link">
   <select id="trialCategory">
     <option>Beğeni</option>
     <option>Yorum</option>
@@ -130,7 +105,7 @@ option {
 
 <div id="appointments" class="hidden">
   <h1>Randevular</h1>
-  <input id="appPhone">
+  <input id="appPhone" placeholder="Telefon">
   <input id="appDate" type="date">
   <input id="appTime" type="time">
   <button onclick="saveAppointment()">Kaydet</button>
@@ -138,17 +113,11 @@ option {
 </div>
 
 <h2>Numaralar</h2>
-
-<table id="tbl" border="1" cellpadding="8">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Kullanıcı</th>
-      <th>Hashtag</th>
-      <th>Profil</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
+<table id="tbl">
+<thead>
+<tr><th>#</th><th>Kullanıcı</th><th>Hashtag</th><th>Profil</th></tr>
+</thead>
+<tbody></tbody>
 </table>
 
 </div>
@@ -157,53 +126,50 @@ option {
 let orders=[],trials=[],appointments=[];
 
 function show(id,el){
- document.querySelectorAll('.main>div').forEach(d=>d.classList.add('hidden'));
+ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));
  document.getElementById(id).classList.remove('hidden');
  document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));
  if(el) el.classList.add('active');
 }
-function go(id){show(id)}
+function go(id){ show(id); }
 
 async function loadOrders(){
  const r=await fetch('/api/orders');
  orders=await r.json();
  orderRows.innerHTML=orders.map(o=>`
  <tr>
-  <td>${o.customer||""}</td>
-  <td>${o.phone||""}</td>
-  <td>${o.service||""}</td>
-  <td>${o.price||""}</td>
+  <td>${o.customer||''}</td>
+  <td>${o.phone||''}</td>
+  <td>${o.service||''}</td>
+  <td>${o.price||''}</td>
   <td>${o.status||'pending'}</td>
  </tr>`).join('');
 }
 
 async function saveOrder(){
-function saveOrder() {
+ const customer=document.getElementById('customer').value.trim();
+ const phone=document.getElementById('phone').value.trim();
+ const service=document.getElementById('service').value;
+ const price=document.getElementById('price').value.trim();
+ const staff=document.getElementById('staff').value.trim();
 
-  const customer = document.getElementById("customer").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const service = document.getElementById("service").value;
-  const price = document.getElementById("price").value.trim();
+ if(!customer||!phone||!service||!price){
+  alert('Lütfen tüm alanları doldurun');
+  return;
+ }
 
-  if (!customer || !phone || !service || !price) {
-    alert("Lütfen tüm alanları doldurun");
-    return;
-  }
+ await fetch('/api/orders',{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({customer,phone,service,price,staff})
+ });
 
-  // devamındaki mevcut saveOrder kodun BURADA kalsın
-}
+ document.getElementById('customer').value='';
+ document.getElementById('phone').value='';
+ document.getElementById('service').value='';
+ document.getElementById('price').value='';
+ document.getElementById('staff').value='';
 
- await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-  // inputları temizle
-document.getElementById("customer").value = "";
-document.getElementById("phone").value = "";
-document.getElementById("Service").value = "";
-document.getElementById("price").value = "";
-document.getElementById("staff").value = "";
-
-  customer:customer.value,phone:phone.value,service:service.value,
-  price:price.value,staff:staff.value
- })});
  loadOrders(); go('orders');
 }
 
@@ -219,9 +185,11 @@ async function loadTrials(){
  trialList.innerHTML=trials.map(t=>`<div>${t.category} - ${t.link}</div>`).join('');
 }
 async function saveTrial(){
- await fetch('/api/trials',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-  link:trialLink.value,category:trialCategory.value
- })});
+ await fetch('/api/trials',{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({link:trialLink.value,category:trialCategory.value})
+ });
  loadTrials();
 }
 
@@ -231,22 +199,24 @@ async function loadAppointments(){
  appointmentList.innerHTML=appointments.map(a=>`<div>${a.phone} - ${a.date} ${a.time}</div>`).join('');
 }
 async function saveAppointment(){
- await fetch('/api/appointments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-  phone:appPhone.value,date:appDate.value,time:appTime.value
- })});
+ await fetch('/api/appointments',{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({phone:appPhone.value,date:appDate.value,time:appTime.value})
+ });
  loadAppointments();
 }
 
 async function loadNumbers(){
- const r = await fetch('/api/numbers');
- const data = await r.json();
- const tbody = document.querySelector('#tbl tbody');
- tbody.innerHTML = '';
+ const r=await fetch('/api/numbers');
+ const data=await r.json();
+ const tbody=document.querySelector('#tbl tbody');
+ tbody.innerHTML='';
  data.forEach((n,i)=>{
-  tbody.innerHTML += `
+  tbody.innerHTML+=`
    <tr>
     <td>${i+1}</td>
-    <td>${n.kullanici_adi || n.username}</td>
+    <td>${n.kullanici_adi||n.username}</td>
     <td>${n.hashtag}</td>
     <td><a href="${n.profileUrl}" target="_blank">Profil</a></td>
    </tr>`;
